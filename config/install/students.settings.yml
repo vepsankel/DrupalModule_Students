@@ -1,0 +1,41 @@
+messaging:
+  birthday:
+    congratulation: 'We wish you an amazing year that ends with accomplishing all the great goals that you have set !'
+    appellative: 'Dear'
+    from: 'Team of .......'
+
+#Length of a field, once modified, should induce schema modification (see students.install)
+form:
+  student:
+    name:
+      max_len: 63
+      regex: '/^[A-Z]([a-z]){1,62}$/'
+      error_message: 'Name must start with a capital letter, contain latin letters only and have a maximum length of 63 symbols'
+    last_name:
+      max_len: 63
+      regex: '/^[A-Z]([a-z]){1,62}$/'
+      error_message: 'Last name must start with a capital letter, contain latin letters only anb have a maximum length of 63 symbols'
+    group:
+      error_message: 'The chosen group is invalid'
+    email:
+      error_message_invalid_email: 'The introduced email is invalid'
+      error_message_email_taken: 'The user with this email address already exists'
+    birth_date:
+      error_message_invalid_date: 'The introduced birth date is invalid'
+      error_message_incorrect_date: 'User must be at least 13 and 99 at most'
+      min_age: 12
+      max_age: 100
+    is_student:
+      yes: 'yes'
+      no: 'no'
+  list_functionality:
+    group:
+      max_len: 7
+      regex: '/^\w{1,7}$/'
+      error_message_invalid: 'Group name is invalig'
+      error_message_delete_unempty: 'You cannot delete group with assigned students'
+      error_message_already_exists: 'Student group with this name already exists'
+    color:
+      regex: '/^#?([0-9]|[a-f]){6}$/'
+      error_message: 'The introduced hex format color does not exist'
+      default_color: 'f6f6f2'

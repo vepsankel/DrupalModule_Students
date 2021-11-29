@@ -1,0 +1,20 @@
+<p>
+    Birthday block!
+    Do not forget to celebrate students, that have their birthday this month:
+    {% for student in form.students %}
+        <div>{{ student.name }} {{ student.last_name }}, born at {{ student.birth_date }};</div>
+    {% endfor %}
+
+    {{ form.appellation }}
+    {{ form.message }}
+    {{ form.from_whom }}
+
+{#Some of form fields below are required for successful submitting#}
+    {{ form.action }}
+    {{ form.id }}
+    {{ form.form_id }}
+    {{ form.build_id }}
+    {{ form.form_build_id }}
+    {{ form.form_token }}
+    {{ form.send }}
+</p>

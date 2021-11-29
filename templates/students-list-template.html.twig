@@ -1,0 +1,26 @@
+<p>Here you can find course students:</p>
+<a href="0/1">Add a new student</a>
+<div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Group</th>
+            <th>Name</th>
+            <th>Last name</th>
+            <th>Birth date</th>
+            <th>Is student</th>
+        </tr>
+    {% for student in students %}
+        <tr style="background-color: #{{ student.color }}">
+            <td><a href="{{ student.id }}">{{ student.id }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.group }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.last_name }}</td>
+            <td>{{ student.birth_date }}</td>
+            <td>{{ student.is_student }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</div>

@@ -1,0 +1,17 @@
+view general information:
+  title: 'View General Information'
+  description: 'Access general information about students, such as student names, university email address, group etc.'
+
+view student information:
+  title: 'View Particular Student Information'
+  description: 'Access particular information about given student'
+
+edit particular information:
+  title: 'Edit Particular Student Information'
+  description: 'Edit information of given student, such as registered email address'
+
+# Useless at current implementation, but makes sense if something like a
+# blog page is built alongside with module-implemented table
+edit general information:
+  title: 'Edit General Information'
+  description: 'Edit general information such as grade or course description'

@@ -1,0 +1,27 @@
+<div>
+
+{#Some of form fields below are required for successful submitting#}
+    {{ functionality.action }}
+    {{ functionality.id }}
+    {{ functionality.form_id }}
+    {{ functionality.build_id }}
+    {{ functionality.form_build_id }}
+    {{ functionality.form_token }}
+
+    {{ functionality.add_student }}
+    {{ functionality.add_group_textfield }}
+    {{ functionality.add_group_button }}
+
+{#      TODO: Add styling; hide groups settings  #}
+    {% for group in functionality.groups %}
+        <div style="
+            display: flex;
+            align-items: center;
+        ">
+            {{ functionality[group.group_name] }}
+            {{ functionality[group.group_name ~ 'remove'] }}
+        </div>
+    {% endfor %}
+
+    {{ functionality.set }}
+</div>

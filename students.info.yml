@@ -1,0 +1,7 @@
+name: Students Module
+description: A number of pages, showing students managing information
+package: Custom
+
+type: module
+core: 8.x
+core_version_requirement: ^8 || ^9

@@ -1,0 +1,36 @@
+students.list:
+  path: '/students/list'
+  defaults:
+    _controller: '\Drupal\students\Controller\StudentsController::list'
+    _title: 'Students list'
+    _form: '\Drupal\students\Form\BirthdayMessageForm'
+  requirements:
+    _permission: 'View General Information+access content'
+  options:
+    no-caching: 'TRUE'
+
+#students.new:
+#  path: '/students/new/{is_editable}'
+#  defaults:
+#    _form: '\Drupal\students\Form\NewStudentForm'
+#    _title: 'New student information:'
+#  requirements:
+#    _permission: 'access content'
+
+#Paths for creating and updating a student entry
+#They are separated due to difference in required permissions
+student.info:
+  path: '/students/{id}'
+  defaults:
+    _form: '\Drupal\students\Form\NewStudentForm'
+    _title: 'Edit student information:'
+  requirements:
+    _permission: 'View Particular Student Information'
+
+student.edit:
+  path: '/students/{id}/{is_editable}'
+  defaults:
+    _form: '\Drupal\students\Form\NewStudentForm'
+    _title: 'Edit student information:'
+  requirements:
+    _permission: 'Edit Particular Student Information'

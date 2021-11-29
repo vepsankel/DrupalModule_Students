@@ -1,0 +1,265 @@
+<?php
+
+  use Drupal\Core\Form\FormStateInterface;
+
+  /**
+   * Implements hook_hook().
+   */
+  function students_theme($existing, $type, $theme, $path): array {
+    return [
+        'students_list_template' => [
+          'variables' => [
+            'students' => [],
+          ],
+        ],
+
+        'birthdays_template' => [
+          'render element' => 'form',
+        ],
+
+        'students_list_functionality_template' => [
+          'render element' => 'functionality',
+        ]
+      ];
+  }
+
+  /**
+   * Implements hook_preprocess_template().
+   */
+  function students_preprocess_students_list_template(&$variables) {
+    $connection = \Drupal::service('database');
+    $config = Drupal::config('students.settings');
+
+    $result = $connection->select('students_students','stud')
+      ->fields('stud',['student_id','name','last_name','email','birth_date','student_group','is_student'])
+      ->condition('student_group','NULL','<>')
+      ->orderBy('is_student','DESC')
+      ->orderBy('student_group')
+      ->orderBy('email')
+      ->execute();
+
+    $groups_colors_result = $connection->select('students_groups','group')
+      ->fields('group',['student_group','color'])
+      ->execute();
+
+    $groups_colors = [];
+    foreach ($groups_colors_result as $group) {
+      $groups_colors[$group->student_group] = $group->color;
+    }
+    $default_color = $config->get('form.list_functionality.color.default_color');
+    $groups_colors['default']=$default_color;
+
+    foreach ($result as $stud_entry) {
+      array_push($variables['students'],
+        [
+          'id' => $stud_entry->student_id,
+          'email' => $stud_entry->email,
+          'name' => $stud_entry->name,
+          'last_name' => $stud_entry->last_name,
+          'birth_date' => $stud_entry->birth_date,
+          'group' => $stud_entry->student_group?:'--none--',
+          'color' => array_key_exists(
+              $stud_entry->student_group?:'default',
+                  $groups_colors)
+              ? $groups_colors[$stud_entry->student_group?:'default'] : $default_color,
+          'is_student' => $stud_entry->is_student == 1
+            ? $config->get('form.student.is_student.yes')
+            : $config->get('form.student.is_student.no'),
+        ]
+      );
+    }
+
+    $result = $connection->select('students_students','stud')
+      ->fields('stud',['student_id','name','last_name','email','birth_date','student_group','is_student'])
+      ->condition('student_group',NULL,'IS NULL')
+      ->orderBy('is_student','DESC')
+      ->orderBy('student_group')
+      ->orderBy('email')
+      ->execute();
+
+    foreach ($result as $stud_entry) {
+      array_push($variables['students'],
+        [
+          'id' => $stud_entry->student_id,
+          'email' => $stud_entry->email,
+          'name' => $stud_entry->name,
+          'last_name' => $stud_entry->last_name,
+          'birth_date' => $stud_entry->birth_date,
+          'group' => $stud_entry->student_group?:'--none--',
+          'color' => array_key_exists(
+            $stud_entry->student_group?:'default',
+            $groups_colors)
+            ? $groups_colors[$stud_entry->student_group?:'default'] : $default_color,
+        ]
+      );
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  function students_form_student_new_student_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+    $student_id = $form['id']['#value'];
+
+    if ($form['is_editable']['#value'] == '1') {
+      //If we edit form -
+      //add save button and make fields changeable
+
+      $form['submit'] = [
+        '#type' => 'submit',
+        '#value' => t('Save'),
+        '#name' => 'submit_button',
+      ];
+
+      $form['last_name']['#disabled'] = FALSE;
+      $form['name']['#disabled'] = FALSE;
+      $form['email']['#disabled'] = FALSE;
+      $form['birth_date']['#disabled'] = FALSE;
+      $form['group']['#disabled'] = FALSE;
+      $form['is_student']['#disabled'] = FALSE;
+
+      //If we edit form and student id exists -
+      //add possibility to delete student
+      if ($student_id) {
+        $form['delete'] = [
+          '#type' => 'submit',
+          '#value' => t('Delete'),
+          '#name' => 'delete_button',
+        ];
+      }
+
+    } else {
+      //If we cannot edit form - add edit button
+      $form['edit'] = [
+        '#type' => 'submit',
+        '#value' => t('Edit'),
+        '#name' => 'edit_button',
+      ];
+    }
+
+    //Add groups to selection
+    $connection = \Drupal::service('database');
+    $result = $connection->select('students_groups','group')
+      ->fields('group',['student_group'])
+      ->execute();
+
+    foreach ($result as $group) {
+      array_push($form['group']['#options'], $group->student_group);
+    }
+
+    //fill form with found data about given student
+    if ($student_id) {
+      $result = $connection->select('students_students','stud')
+        ->fields('stud',['student_id','name','last_name','email','birth_date','is_student','student_group'])
+        ->condition('student_id',$student_id,'=')
+        ->range(0,1)
+        ->execute();
+      foreach ($result as $student) {
+        $form['name']['#default_value'] = $student->name;
+        $form['last_name']['#default_value'] = $student->last_name;
+        $form['birth_date']['#default_value'] = $student->birth_date;
+        $form['name']['#default_value'] = $student->name;
+        $form['email']['#default_value'] = $student->email;
+        $form['group']['#default_value'] = array_search($student->student_group,$form['group']['#options']);
+        $form['is_student']['#default_value'] = $student->is_student;
+      }
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_template().
+   */
+  function students_preprocess_birthdays_template(&$render) {
+    $render['form']['students']=[];
+    $month = date('m');
+    $connection = \Drupal::service('database');
+
+    $query = $connection->select('students_students','stud');
+    $query->fields('stud',['student_id','name','last_name','email','birth_date']);
+    $query->where('MONTH(birth_date)=:my_month',['my_month'=>$month]);
+    $result=$query->execute()->fetchAll();
+
+    foreach ($result as $stud_entry) {
+      array_push($render['form']['students'],
+        [
+          'id' => $stud_entry->student_id,
+          'name' => $stud_entry->name,
+          'last_name' => $stud_entry->last_name,
+          'birth_date' => $stud_entry->birth_date,
+        ]
+      );
+    }
+  }
+
+  /**
+   * Implements hook_form_FORM_ID_alter().
+   */
+  function students_form_function_list_functionality_form_alter(&$form, FormStateInterface $form_state) {
+    $config = Drupal::config('students.settings');
+    $connection = Drupal::service('database');
+    $result = $connection->select('students_groups','group')
+      ->fields('group',['student_group','color'])
+      ->execute();
+
+    foreach ($result as $group) {
+
+      $form[$group->student_group] = [
+        '#type' => 'textfield',
+        '#maxlength' => $config->get('form.list_functionality.group.max_len'),
+        '#size' => $config->get('form.list_functionality.group.max_len'),
+        '#default_value' => $group->color,
+        '#title' => $group->student_group . ' color',
+      ];
+
+      $form[$group->student_group . 'remove'] = [
+        '#type' => 'submit',
+        '#value' => t('Remove') . ' ' . $group->student_group,
+        '#name' => 'remove_group_' . $group->student_group,
+      ];
+    }
+  }
+
+  /**
+   * Implements hook_preprocess_template().
+   */
+  function students_preprocess_students_list_functionality_template(&$variables) {
+    $variables['functionality']['groups'] = [];
+
+    $connection = Drupal::service('database');
+    $result = $connection->select('students_groups','group')
+      ->fields('group',['student_group','color'])
+      ->execute();
+
+    foreach ($result as $group) {
+      array_push($variables['functionality']['groups'],
+        [
+          'group_name' => $group->student_group,
+        ]
+      );
+    }
+  }
+
+  /**
+   * Implements hook_mail().
+   */
+
+//  TODO:   Find out, why it doesn't work
+//          (mail server?)
+  function students_mail($key, &$message, $params) {
+    switch ($key) {
+      case 'birthday':
+        $message['to'] = $params['to'];
+        $message['from'] = \Drupal::config('system.site')->get('mail');
+        $message['subject'] = "Happy Birthday!";
+        $message['body'][] = $params['appellation'] . " " . $params['name'] . '\n\n' .$params['message'] . '\n\n' . $params['from'];
+      break;
+    }
+  }
+
+  function redirect_to_new_student_form(array &$form, FormStateInterface $form_state) {
+    $form_state->setRedirect('students.new');
+  }
+
+  function redirect_to_student_list(array &$form, FormStateInterface $form_state) {
+    $form_state->setRedirect('students.list');
+  }
