@@ -8,4 +8,4 @@ The module introduces 2 blocks: BirthdayBlock and StudentListFunctionalityBlock.
 BirthdayBlock shows students who have theit birthdays this month, allowing us to send them a congratulation email.
 StudentListtFunctionalityBlocks contains instruments for managing table (currently - colors, used for different groups, later there could be filter/sort variants)
 
-Students module allows viewing students by accessing '/web/students/list' page. By clocking on student's ID we can view information about that student.
+Students module allows viewing students by accessing '/web/students/list' page. By clicking on student's ID we can view information about that student or edit it if we possess necessary permissions.
