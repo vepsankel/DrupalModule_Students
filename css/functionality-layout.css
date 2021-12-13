@@ -1,0 +1,26 @@
+.group_in_enumeration {
+}
+
+.group-name {
+  font-size: 15px;
+}
+
+.group_in_enumeration > div {
+  margin: 0 0 0 0;
+}
+
+.group_in_enumeration {
+  margin: 0 0 10px 0;
+}
+
+.fas {
+  margin-right: 10px;
+}
+
+.rotatable {
+  transition: transform 0.5s;
+}
+
+.rotate-90-deg-right {
+  transform: rotate(90deg);
+}

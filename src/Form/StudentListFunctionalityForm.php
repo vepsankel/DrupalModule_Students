@@ -83,6 +83,7 @@
       $form['add_group_textfield'] = [
         '#type' => 'textfield',
         '#maxlength' => $config->get('form.list_functionality.group.max_len'),
+        '#size' => $config->get('form.list_functionality.group.max_len'),
         '#title' => t('New Group'),
       ];
 

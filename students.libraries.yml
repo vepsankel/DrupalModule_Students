@@ -1,0 +1,10 @@
+functionality:
+  css:
+    layout:
+      css/functionality-layout.css: {}
+    state:
+      css/functionality-state.css: {}
+  js:
+    js/functionality-state.js: {}
+  dependencies:
+    - core/jquery

@@ -1,3 +1,9 @@
+{{ attach_library('students/functionality') }}
+
+<head>
+    <script src="https://kit.fontawesome.com/bdea5d270a.js" crossorigin="anonymous"></script>
+</head>
+
 <div>
 
 {#Some of form fields below are required for successful submitting#}
@@ -8,20 +14,28 @@
     {{ functionality.form_build_id }}
     {{ functionality.form_token }}
 
-    {{ functionality.add_student }}
-    {{ functionality.add_group_textfield }}
-    {{ functionality.add_group_button }}
+    <div class="group_with_сontent">
+        {{ functionality.add_student }}
+        {{ functionality.add_group_textfield }}
+        {{ functionality.add_group_button }}
+    </div>
 
 {#      TODO: Add styling; hide groups settings  #}
-    {% for group in functionality.groups %}
-        <div style="
-            display: flex;
-            align-items: center;
-        ">
-            {{ functionality[group.group_name] }}
-            {{ functionality[group.group_name ~ 'remove'] }}
+
+    <div id="manage_groups">
+        <span class="my-button hides-next-element" id="group_enumeration_toggle_button"><i class="rotatable fas fa-lg fa-angle-right"></i>Manage existing groups</span>
+        <div id="group_enumeration">
+            {% for group in functionality.groups %}
+                <div class="group_in_enumeration">
+                    <span class="hides-next-element group-name"><i class="rotatable fas fa-sm fa-angle-right"></i><b>{{ group.group_name }}</b></span>
+                    <div class="group_with_сontent"  id="{{ group.group_name }}">
+                        {{ functionality[group.group_name] }}
+                        {{ functionality[group.group_name ~ 'remove'] }}
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    </div>
 
     {{ functionality.set }}
 </div>

@@ -50,23 +50,21 @@
     $groups_colors['default']=$default_color;
 
     foreach ($result as $stud_entry) {
-      array_push($variables['students'],
-        [
-          'id' => $stud_entry->student_id,
-          'email' => $stud_entry->email,
-          'name' => $stud_entry->name,
-          'last_name' => $stud_entry->last_name,
-          'birth_date' => $stud_entry->birth_date,
-          'group' => $stud_entry->student_group?:'--none--',
-          'color' => array_key_exists(
-              $stud_entry->student_group?:'default',
-                  $groups_colors)
-              ? $groups_colors[$stud_entry->student_group?:'default'] : $default_color,
-          'is_student' => $stud_entry->is_student == 1
-            ? $config->get('form.student.is_student.yes')
-            : $config->get('form.student.is_student.no'),
-        ]
-      );
+      $variables['students'][] = [
+        'id' => $stud_entry->student_id,
+        'email' => $stud_entry->email,
+        'name' => $stud_entry->name,
+        'last_name' => $stud_entry->last_name,
+        'birth_date' => $stud_entry->birth_date,
+        'group' => $stud_entry->student_group ?: '--none--',
+        'color' => array_key_exists(
+          $stud_entry->student_group ?: 'default',
+          $groups_colors)
+          ? $groups_colors[$stud_entry->student_group ?: 'default'] : $default_color,
+        'is_student' => $stud_entry->is_student == 1
+          ? $config->get('form.student.is_student.yes')
+          : $config->get('form.student.is_student.no'),
+      ];
     }
 
     $result = $connection->select('students_students','stud')
@@ -78,20 +76,18 @@
       ->execute();
 
     foreach ($result as $stud_entry) {
-      array_push($variables['students'],
-        [
-          'id' => $stud_entry->student_id,
-          'email' => $stud_entry->email,
-          'name' => $stud_entry->name,
-          'last_name' => $stud_entry->last_name,
-          'birth_date' => $stud_entry->birth_date,
-          'group' => $stud_entry->student_group?:'--none--',
-          'color' => array_key_exists(
-            $stud_entry->student_group?:'default',
-            $groups_colors)
-            ? $groups_colors[$stud_entry->student_group?:'default'] : $default_color,
-        ]
-      );
+      $variables['students'][] = [
+        'id' => $stud_entry->student_id,
+        'email' => $stud_entry->email,
+        'name' => $stud_entry->name,
+        'last_name' => $stud_entry->last_name,
+        'birth_date' => $stud_entry->birth_date,
+        'group' => $stud_entry->student_group ?: '--none--',
+        'color' => array_key_exists(
+          $stud_entry->student_group ?: 'default',
+          $groups_colors)
+          ? $groups_colors[$stud_entry->student_group ?: 'default'] : $default_color,
+      ];
     }
   }
 
@@ -144,7 +140,7 @@
       ->execute();
 
     foreach ($result as $group) {
-      array_push($form['group']['#options'], $group->student_group);
+      $form['group']['#options'][] = $group->student_group;
     }
 
     //fill form with found data about given student
@@ -158,7 +154,6 @@
         $form['name']['#default_value'] = $student->name;
         $form['last_name']['#default_value'] = $student->last_name;
         $form['birth_date']['#default_value'] = $student->birth_date;
-        $form['name']['#default_value'] = $student->name;
         $form['email']['#default_value'] = $student->email;
         $form['group']['#default_value'] = array_search($student->student_group,$form['group']['#options']);
         $form['is_student']['#default_value'] = $student->is_student;
@@ -180,14 +175,12 @@
     $result=$query->execute()->fetchAll();
 
     foreach ($result as $stud_entry) {
-      array_push($render['form']['students'],
-        [
-          'id' => $stud_entry->student_id,
-          'name' => $stud_entry->name,
-          'last_name' => $stud_entry->last_name,
-          'birth_date' => $stud_entry->birth_date,
-        ]
-      );
+      $render['form']['students'][] = [
+        'id' => $stud_entry->student_id,
+        'name' => $stud_entry->name,
+        'last_name' => $stud_entry->last_name,
+        'birth_date' => $stud_entry->birth_date,
+      ];
     }
   }
 
@@ -231,11 +224,9 @@
       ->execute();
 
     foreach ($result as $group) {
-      array_push($variables['functionality']['groups'],
-        [
-          'group_name' => $group->student_group,
-        ]
-      );
+      $variables['functionality']['groups'][] = [
+        'group_name' => $group->student_group,
+      ];
     }
   }
 
