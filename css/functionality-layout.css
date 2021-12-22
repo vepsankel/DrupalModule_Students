@@ -1,4 +1,9 @@
-.group_in_enumeration {
+#manage_groups {
+  margin-top: 20px;
+}
+
+#add_new_group {
+  
 }
 
 .group-name {
@@ -23,4 +28,8 @@
 
 .rotate-90-deg-right {
   transform: rotate(90deg);
+}
+
+#group_enumeration_toggle_button {
+  font-size: 15px;
 }
